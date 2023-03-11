@@ -1,4 +1,4 @@
-pocketbase
-node_modules/*
-pb_data/*
-pb_migrations/*
+*.o
+node_modules
+pb_data
+pb_migrations
