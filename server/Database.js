@@ -9,7 +9,7 @@ const { spawn } = require('child_process');
 
 module.exports = class Database {
     constructor(server) {
-        const application = spawn('./pocketbase', ['serve','--http','127.0.0.1:9001']);
+        const application = spawn('./pocketbase.o', ['serve','--http','127.0.0.1:9001']);
         application.on('spawn',()=>{
             setTimeout(()=>{
                 server.start();

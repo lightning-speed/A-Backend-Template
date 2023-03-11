@@ -1,8 +1,8 @@
 class Client{
-    static register(email,username,passwordHash,handler,err){
+    static register(email,username,password,handler,err){
         const url = '/api';
 
-        const data = {type:'reg',username:username,email:email,passwordHash:passwordHash};
+        const data = {type:'reg',username:username,email:email,passwordHash:sha256(password)};
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -24,10 +24,10 @@ class Client{
             }
         });
     }
-    static login(email,username,passwordHash,handler,err){
+    static login(email,username,password,handler,err){
         const url = '/api';
 
-        const data = {type:'auth',username:username,email:email,passwordHash:passwordHash};
+        const data = {type:'auth',username:username,email:email,passwordHash:sha256(password)};
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -54,7 +54,7 @@ class Client{
         if(authCred!=null){
             authCred = JSON.parse(authCred);
         }else return data;
-        const credHeader = [authCred.id,authCred.username,authCred.passwordHash];
+        const credHeader = [authCred.id,authCred.username,authCred.sessionID];
         data.credHeader = credHeader;
         return data;
     }

@@ -1,4 +1,4 @@
-
+const {sha256} = require('./Util.js');
 
 module.exports = class Auth {
     constructor() {
@@ -26,8 +26,12 @@ module.exports = class Auth {
     static async login(data, pb) {
         try {
             if (data.email != null) {
-                const res = await this.db.pb.collection('usr').getFirstListItem(`email="${data.email}"`);
+                let res = await this.db.pb.collection('usr').getFirstListItem(`email="${data.email}"`);
                 if (res.passwordHash == data.passwordHash) {
+                    await this.updateSession(res);
+
+                    res.passwordHash = null;
+
                     return { str: res, code: 200 }
                 }
                 else {
@@ -35,8 +39,9 @@ module.exports = class Auth {
                 }
             }
             else if (data.username != null) {
-                const res = await this.db.pb.collection('usr').getFirstListItem(`username="${data.username}"`);
+                let res = await this.db.pb.collection('usr').getFirstListItem(`username="${data.username}"`);
                 if (res.passwordHash == data.passwordHash) {
+                    await this.updateSession(res);
                     res.passwordHash = null;
                     return { str: res, code: 200 }
                 }
@@ -45,23 +50,37 @@ module.exports = class Auth {
                 }
             }
         } catch (e) {
+            console.log(e);
             return { code: 616 };
         }
     }
     static async verify(data){
+        try{
         const header = data.credHeader;
         const dat = await this.db.pb.collection('usr').getOne(header[0]);
-        if(dat.username == header[1]&&dat.passwordHash== header[2]){
-            return true;
+        if(dat.username == header[1]&&dat.sessionID== header[2]){
+            return {str:true,code:200};
         }
-        else return false;
+        else return {str:false,code:200};
+        }catch(e){
+            return {code: 616};
+        }
+    }
+    static async updateSession(data){
+        try{
+        data.sessionID = createSessionID();
+        await this.db.pb.collection('usr').update(data.id,data);
+        }catch(e){
+            console.log(e);
+        }
     }
     static setDB(db) {
         this.db = db;
     }
+
 }
 
-
+console.log(createSessionID());
 function createSessionID(){
-    sha256()
+    return sha256(parseInt(Math.random()*10000000)+""+parseInt(Math.random()*10000000));
 }
