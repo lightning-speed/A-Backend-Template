@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const Database = require('./Database');
 const Auth = require('./Auth');
+const Codes = require('./Code.js');
 let database;
 let currentServingIPS = [];
 let startTime = new Date();
@@ -13,7 +14,7 @@ module.exports = class Server {
         const serve = async (req, res) => {
             const ip = req.socket.remoteAddress;
             if (currentServingIPS.includes(ip)) {
-                res.status(441);
+                res.status(Codes.rejectedLimit);
                 res.send({});
                 console.log(currentServingIPS);
                 return;
@@ -57,7 +58,7 @@ module.exports = class Server {
                     returnData = await Auth.verify(data);
                     break;
                 default:
-                    returnData = { code: 404 };
+                    returnData = { code: codes.notFound};
             }
         } else if (method == 'GET') {
 

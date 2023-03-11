@@ -1,4 +1,6 @@
 const {sha256} = require('./Util.js');
+const Codes = require('./Code.js');
+
 
 module.exports = class Auth {
     constructor() {
@@ -16,7 +18,7 @@ module.exports = class Auth {
                 passwordHash: passwordHash,
                 sessionID: createSessionID()
             });
-            outData = { str: res, code: 200 };
+            outData = { str: res, code: codes.sucess };
         } catch (e) {
             console.log(e);
             outData = { code: 512 };
@@ -32,10 +34,10 @@ module.exports = class Auth {
 
                     res.passwordHash = null;
 
-                    return { str: res, code: 200 }
+                    return { str: res, code: codes.sucess }
                 }
                 else {
-                    return { code: 615 };
+                    return { code: codes.unAuthorized };
                 }
             }
             else if (data.username != null) {
@@ -43,15 +45,15 @@ module.exports = class Auth {
                 if (res.passwordHash == data.passwordHash) {
                     await this.updateSession(res);
                     res.passwordHash = null;
-                    return { str: res, code: 200 }
+                    return { str: res, code: codes.sucess }
                 }
                 else {
-                    return { code: 615 };
+                    return { code: codes.unAuthorized };
                 }
             }
         } catch (e) {
             console.log(e);
-            return { code: 616 };
+            return { code: codes.notFound };
         }
     }
     static async verify(data){
@@ -59,11 +61,11 @@ module.exports = class Auth {
         const header = data.credHeader;
         const dat = await this.db.pb.collection('usr').getOne(header[0]);
         if(dat.username == header[1]&&dat.sessionID== header[2]){
-            return {str:true,code:200};
+            return {str:true,code:codes.sucess};
         }
-        else return {str:false,code:200};
+        else return {str:false,code:codes.sucess};
         }catch(e){
-            return {code: 616};
+            return {code: codes.notFound};
         }
     }
     static async updateSession(data){
