@@ -21,7 +21,6 @@ module.exports = class Server {
             }
             currentServingIPS.push(ip);
             try {
-                console.log("hey")
                 const reqData = req.body;
                 reqData.ip = ip;
                 const method = req.method;

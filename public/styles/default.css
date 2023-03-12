@@ -1,0 +1,33 @@
+body,html{
+    margin:0;
+    height:100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+span{
+}
+#root{
+    height:100%;
+    width: 100%;
+    margin: 0px;
+    padding: 0;
+}
+
+*{
+    font-family: 'Rubik', sans-serif;
+    font-size:15px;
+
+}
+button{
+    padding:8px;
+    font-size:15px;
+    margin: 5px;
+    outline: none;
+    border-radius: 4px;
+    border:none;
+    background-color: rgba(220,220,220);
+}
+button:hover{
+    background-color: rgba(200,200,200);
+}
